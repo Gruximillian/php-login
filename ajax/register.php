@@ -8,14 +8,41 @@ require_once "../inc/config.php";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
   // Always return JSON format
   header("Content-type: application/json");
-  $data = [];
+  $return = [];
 
-  $data["redirect"] = "/dashboard.php";
+  $email = Filter::String($_POST["email"]);
+  // Make sure user doesn't exist
+  $findUser = $con->prepare("SELECT user_id FROM users WHERE email = :email LIMIT 1");
+  $findUser->bindParam(":email", $email, PDO::PARAM_STR);
+  $findUser->execute();
 
-  echo json_encode($data, JSON_PRETTY_PRINT); exit;
+  if ($findUser->rowCount() == 1) {
+    // User exists
+    // Check if the user is able to log in
+    $return["error"] = "You already have an account!";
+    $return["is_logged_in"] = false;
+  } else {
+    // User does not exist, add it now
+
+    // Create a hash from the password that user entered
+    $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
+
+    $addUser = $con->prepare("INSERT INTO users(email, password) VALUES (:email, :password)");
+    $addUser->bindParam(":email", $email, PDO::PARAM_STR);
+    $addUser->bindParam(":password", $password, PDO::PARAM_STR);
+    $addUser->execute();
+
+    $user_id = $con->lastInsertId();
+
+    $_SESSION["user_id"] = (int) $user_id;
+
+    $return["redirect"] = "/dashboard.php?message=welcome";
+    $return["is_logged_in"] = true;
+  }
+
+  echo json_encode($return, JSON_PRETTY_PRINT); exit;
 } else {
   exit("Not allowed!");
 }
-
 
 ?>
