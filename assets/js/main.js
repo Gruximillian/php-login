@@ -41,6 +41,7 @@
 
     xhr.onload = function() {
       if (xhr.status === 200) {
+        // console.log(xhr.response);
         const data = JSON.parse(xhr.response);
         if (data.redirect !== undefined) {
           window.location = `${SERVER_ROOT}${data.redirect}`;
