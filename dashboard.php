@@ -5,29 +5,22 @@ define("__CONFIG__", true);
 // Require the config
 require_once "inc/config.php";
 
-echo $_SESSION["user_id"] . " is your id";
-exit;
+ForceLogin();
+
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
-  <title>PHP Login System</title>
+  <title>Dashboard</title>
   <!-- UIkit CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.28/css/uikit.min.css" />
 </head>
 <body>
 
   <div class="uk-section uk-container">
-    <?php
-      echo "Howdy! Today is: ";
-      echo date("Y m d");
-    ?>
-    <p>
-      <a href="login.php">Login </a>
-      <a href="register.php"> Register</a>
-    </p>
+    <p>Dashboard here: you are signed in as user <?php echo $_SESSION["user_id"]; ?></p>
   </div>
 
   <?php require_once("inc/footer.php"); ?>
