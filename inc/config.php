@@ -6,6 +6,11 @@
     exit("No config file!");
   }
 
+  //  Sessions are always turned on
+  if (!isset($_SESSION)) {
+    session_start();
+  }
+
   // Config code is bellow
 
   // Allow errors
